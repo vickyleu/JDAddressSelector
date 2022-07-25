@@ -1,18 +1,22 @@
-package chihane.jdaddressselector.model;
+package chihane.jdaddressselector.model
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import chihane.jdaddressselector.global.Database
+import com.dbflow5.annotation.Column
+import com.dbflow5.annotation.PrimaryKey
+import com.dbflow5.annotation.Table
+import com.dbflow5.structure.BaseModel
 
-import chihane.jdaddressselector.global.Database;
-
-@Table(database = Database.class)
-public class City extends BaseModel {
+@Table(database = Database::class, name = "City")
+class City : BaseModel() {
+    @JvmField
     @PrimaryKey
-    public int id;
+    var id = 0
+
+    @JvmField
     @Column
-    public int province_id;
+    var province_id = 0
+
+    @JvmField
     @Column
-    public String name;
+    var name: String? = null
 }

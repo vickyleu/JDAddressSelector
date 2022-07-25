@@ -1,59 +1,66 @@
-package chihane.jdaddressselector;
+package chihane.jdaddressselector
 
-import android.content.Context;
+import android.content.Context
+import chihane.jdaddressselector.global.Database
+import chihane.jdaddressselector.model.*
+import com.dbflow5.config.FlowConfig
+import com.dbflow5.config.FlowManager
+import com.dbflow5.config.database
+import com.dbflow5.query.select
 
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.list.FlowQueryList;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-
-import java.util.ArrayList;
-
-import chihane.jdaddressselector.model.City;
-import chihane.jdaddressselector.model.City_Table;
-import chihane.jdaddressselector.model.County;
-import chihane.jdaddressselector.model.County_Table;
-import chihane.jdaddressselector.model.Province;
-import chihane.jdaddressselector.model.Street;
-import chihane.jdaddressselector.model.Street_Table;
-
-public class DefaultAddressProvider implements AddressProvider {
-    public DefaultAddressProvider(Context context) {
-        FlowManager.init(new FlowConfig.Builder(context.getApplicationContext()).build());
+class DefaultAddressProvider(context: Context) : AddressProvider {
+    val db = database<Database>();
+    override fun provideProvinces(addressReceiver: AddressProvider.AddressReceiver<Province?>) {
+        (select from Province::class) // some conditions
+            .flowQueryList(db).use { list ->
+                // list is just backed by an active cursor.
+                addressReceiver.send(ArrayList<Province>(list))
+            }
     }
 
-    @Override
-    public void provideProvinces(final AddressReceiver<Province> addressReceiver) {
-        final FlowQueryList<Province> provinceQueryList = SQLite.select()
-                .from(Province.class)
-                .flowQueryList();
-        addressReceiver.send(new ArrayList<>(provinceQueryList));
+    override fun provideCitiesWith(
+        provinceId: Int,
+        addressReceiver: AddressProvider.AddressReceiver<City?>
+    ) {
+        (select from City::class
+                where
+                City_Table.province_id.eq(provinceId)
+                ) // some conditions
+            .flowQueryList(db).use { list ->
+                // list is just backed by an active cursor.
+                addressReceiver.send(ArrayList<City>(list))
+            }
     }
 
-    @Override
-    public void provideCitiesWith(int provinceId, final AddressReceiver<City> addressReceiver) {
-        final FlowQueryList<City> cityQueryList = SQLite.select()
-                .from(City.class)
-                .where(City_Table.province_id.eq(provinceId))
-                .flowQueryList();
-        addressReceiver.send(new ArrayList<>(cityQueryList));
+    override fun provideCountiesWith(
+        cityId: Int,
+        addressReceiver: AddressProvider.AddressReceiver<County?>
+    ) {
+        (select from County::class
+                where
+                County_Table.city_id.eq(cityId)
+                ) // some conditions
+            .flowQueryList(db).use { list ->
+                // list is just backed by an active cursor.
+                addressReceiver.send(ArrayList<County>(list))
+            }
     }
 
-    @Override
-    public void provideCountiesWith(int cityId, final AddressReceiver<County> addressReceiver) {
-        final FlowQueryList<County> countyQueryList = SQLite.select()
-                .from(County.class)
-                .where(County_Table.city_id.eq(cityId))
-                .flowQueryList();
-        addressReceiver.send(new ArrayList<>(countyQueryList));
+    override fun provideStreetsWith(
+        countyId: Int,
+        addressReceiver: AddressProvider.AddressReceiver<Street?>
+    ) {
+        (select from Street::class
+                where
+                Street_Table.county_id.eq(countyId)
+                ) // some conditions
+            .flowQueryList(db).use { list ->
+                // list is just backed by an active cursor.
+                addressReceiver.send(ArrayList<Street>(list))
+            }
     }
 
-    @Override
-    public void provideStreetsWith(int countyId, final AddressReceiver<Street> addressReceiver) {
-        final FlowQueryList<Street> streetQueryList = SQLite.select()
-                .from(Street.class)
-                .where(Street_Table.county_id.eq(countyId))
-                .flowQueryList();
-        addressReceiver.send(new ArrayList<>(streetQueryList));
+    init {
+        FlowManager.init(FlowConfig.Builder(context.applicationContext).build())
     }
 }

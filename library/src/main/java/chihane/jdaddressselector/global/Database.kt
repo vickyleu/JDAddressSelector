@@ -1,7 +1,9 @@
-package chihane.jdaddressselector.global;
+package chihane.jdaddressselector.global
 
-@com.raizlabs.android.dbflow.annotation.Database(name = Database.NAME, version = Database.VERSION)
-public class Database {
-    public static final String NAME = "area";
-    public static final int VERSION = 1;
+import com.dbflow5.config.DBFlowDatabase
+
+
+@com.dbflow5.annotation.Database(version = 1)
+abstract class Database : DBFlowDatabase() {
+
 }

@@ -1,57 +1,53 @@
-package chihane.jdaddressselector;
+package chihane.jdaddressselector
 
-import android.app.Dialog;
-import android.content.Context;
-import android.view.Gravity;
-import android.view.Window;
-import android.view.WindowManager;
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
+import android.view.Gravity
+import android.view.WindowManager
+import mlxy.utils.Dev
 
-import mlxy.utils.Dev;
+class BottomDialog : Dialog {
+    private var selector: AddressSelector? = null
 
-public class BottomDialog extends Dialog {
-    private AddressSelector selector;
-
-    public BottomDialog(Context context) {
-        super(context, R.style.bottom_dialog);
-        init(context);
+    constructor(context: Context) : super(context, R.style.bottom_dialog) {
+        init(context)
     }
 
-    public BottomDialog(Context context, int themeResId) {
-        super(context, themeResId);
-        init(context);
+    constructor(context: Context, themeResId: Int) : super(context, themeResId) {
+        init(context)
     }
 
-    public BottomDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-        init(context);
+    constructor(
+        context: Context,
+        cancelable: Boolean,
+        cancelListener: DialogInterface.OnCancelListener?
+    ) : super(context, cancelable, cancelListener) {
+        init(context)
     }
 
-    private void init(Context context) {
-        selector = new AddressSelector(context);
-        setContentView(selector.getView());
-
-        Window window = getWindow();
-        WindowManager.LayoutParams params = window.getAttributes();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = Dev.dp2px(context, 256);
-        window.setAttributes(params);
-
-        window.setGravity(Gravity.BOTTOM);
+    private fun init(context: Context) {
+        selector = AddressSelector(context)
+        setContentView(selector!!.view)
+        val window = window
+        val params = window!!.attributes
+        params.width = WindowManager.LayoutParams.MATCH_PARENT
+        params.height = Dev.dp2px(context, 256f)
+        window.attributes = params
+        window.setGravity(Gravity.BOTTOM)
     }
 
-    public void setOnAddressSelectedListener(OnAddressSelectedListener listener) {
-        this.selector.setOnAddressSelectedListener(listener);
+    fun setOnAddressSelectedListener(listener: OnAddressSelectedListener?) {
+        selector?.onAddressSelectedListener = listener
     }
 
-    public static BottomDialog show(Context context) {
-        return show(context, null);
-    }
-
-    public static BottomDialog show(Context context, OnAddressSelectedListener listener) {
-        BottomDialog dialog = new BottomDialog(context, R.style.bottom_dialog);
-        dialog.selector.setOnAddressSelectedListener(listener);
-        dialog.show();
-
-        return dialog;
+    companion object {
+        @JvmOverloads
+        fun show(context: Context, listener: OnAddressSelectedListener? = null): BottomDialog {
+            val dialog = BottomDialog(context, R.style.bottom_dialog)
+            dialog.selector?.onAddressSelectedListener = (listener)
+            dialog.show()
+            return dialog
+        }
     }
 }

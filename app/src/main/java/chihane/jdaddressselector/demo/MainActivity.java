@@ -1,7 +1,7 @@
 package chihane.jdaddressselector.demo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -13,7 +13,7 @@ import chihane.jdaddressselector.model.City;
 import chihane.jdaddressselector.model.County;
 import chihane.jdaddressselector.model.Province;
 import chihane.jdaddressselector.model.Street;
-import mlxy.utils.T;
+import mlxy.utils.*;
 
 public class MainActivity extends AppCompatActivity implements OnAddressSelectedListener {
 

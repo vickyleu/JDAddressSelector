@@ -1,13 +1,12 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "23.0.3"
-
+    compileSdkVersion 33
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 24
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode 6
         versionName "1.1.4"
     }
@@ -19,14 +18,33 @@ android {
     }
 }
 
-def dbflow_version = "4.2.4"
-
+//def dbflow_version = "4.2.4"
+def dbflow_version = "5.0.0-alpha2"
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.google.code.gson:gson:2.4'
-    compile 'com.github.chihane:AndroidUtils:1.0.10'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    api 'com.github.chihane:AndroidUtils:1.0.10'
 
-    apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
-    compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+//    apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
+//    implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
+//    implementation "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+
+//    kapt "com.github.agrosner.dbflow:processor:${dbflow_version}"
+//    // core set of libraries
+//    implementation "com.github.agrosner.dbflow:core:${dbflow_version}"
+//    implementation "com.github.agrosner.dbflow:lib:${dbflow_version}"
+    kapt "com.github.agrosner.dbflow:processor:$dbflow_version"
+    api "com.github.agrosner.dbflow:core:$dbflow_version"
+    api "com.github.agrosner.dbflow:lib:$dbflow_version"
+    api "com.github.agrosner.dbflow:coroutines:$dbflow_version"
+    api "com.github.agrosner.dbflow:contentprovider:$dbflow_version"
+    kapt 'com.squareup:javapoet:1.10.0'
+    kapt 'com.github.agrosner:KPoet:1.0.0'
+
+
+    implementation "androidx.core:core-ktx:1.8.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
